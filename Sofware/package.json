@@ -1,0 +1,19 @@
+{
+  "name": "telemetry-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "electron src/app.js"
+  },
+  "author": "Kevin Gutierrez, kevingtzz@outlook.com, github.com/kevingtzz",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^8.1.1",
+    "electron-rebuild": "^1.10.1"
+  },
+  "dependencies": {
+    "serialport": "^8.0.7",
+    "xbee-api": "^0.6.0"
+  }
+}
