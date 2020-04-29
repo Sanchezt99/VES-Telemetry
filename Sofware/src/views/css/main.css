@@ -1,0 +1,110 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+nav {
+    height: 395px;
+    width: 80px;
+    bottom: 50px;
+    position: absolute;
+    display: grid;
+    grid-template-rows: repeat(5, 1fr);
+    z-index: 10;
+}
+
+nav button {
+    margin: 10px;
+    border-radius: 50%;
+    outline: none;
+    filter: drop-shadow(3px 4px 3px rgb(61, 61, 61));
+    border: none;
+}
+
+nav button:hover {
+    filter: drop-shadow(1px 2px 2px rgb(61, 61, 61));
+}
+
+#database_button {
+    background-color: white;
+    /**color: rgb(104, 201, 104);**/
+    color: gray;
+    font-size: 25px;
+}
+
+#database_button:hover {
+    color: rgb(92, 181, 255);
+}
+
+#solar_panel {
+    background-color: white;
+    color: gray;
+    font-size: 22px;
+}
+
+#solar_panel:hover {
+    color: rgb(166, 184, 68);
+}
+
+#battery {
+    background-color: white;
+    /**color: rgb(136, 77, 77);**/
+    color: gray;
+    font-size: 24px;
+}
+
+#batteries:hover {
+    color: rgb(33, 161, 76);
+}
+
+#engines {
+    background-color: white;
+    /**color: rgb(136, 77, 77);**/
+    color: gray;
+    font-size: 37px;
+}
+
+#engines:hover {
+    color: rgb(61, 24, 24);
+}
+
+#general {
+    background-color: white;
+    /**color: rgb(136, 77, 77);**/
+    color: gray;
+    font-size: 32px;
+}
+
+#general:hover {
+    color: rgb(129, 42, 170);
+}
+
+#map {
+    height: 100vh;
+    width: 100vw;
+}
+
+#serial_indicator {
+    position: absolute;
+    left: 12px;
+    top: 70px;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    border: 1px solid rgb(109, 109, 109);
+    background-color: rgba(165, 165, 165, .7);
+    z-index: 10;
+}
+
+#database_indicator {
+    position: absolute;
+    left: 12px;
+    top: 93px;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    border: 1px solid rgb(109, 109, 109);
+    background-color: rgba(165, 165, 165, .7);
+    z-index: 10;
+}
+ 
