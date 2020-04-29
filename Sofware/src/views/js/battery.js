@@ -1,5 +1,4 @@
-const io = require('socket.io-client');
-var socket = io("http://localhost:4000");
+const { ipcRenderer } = require('electron');
 
 soc = 0;
 instantVolt = 0;
@@ -12,12 +11,12 @@ instantVolt_value = document.getElementById('instantVolt_value');
 minVolt_value = document.getElementById('minVolt_value');
 current_value = document.getElementById('current_value');
 
-socket.on('serial_data', (data) => {
+ipcRenderer.on('serial_data', (event, data) => {
     soc = data.soc;
-    socField.innerHTML = `${soc}%`;
-    socBar.style.width = `${soc}%`; //level of progress bar
-    instantVolt_value.innerHTML = `${instantVolt}`;
-    minVolt_value.innerHTML = `${minVolt}`;
-    current_value.innerHTML = `${current}`;
+    socField.innerHTML = `${data.soc}%`;
+    socBar.style.width = `${data.soc}%`; //level of progress bar
+    instantVolt_value.innerHTML = `${data.instantVolt}`;
+    minVolt_value.innerHTML = `${data.minVolt}`;
+    current_value.innerHTML = `${data.current}`;
 });
 

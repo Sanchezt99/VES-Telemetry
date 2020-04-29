@@ -14,6 +14,7 @@ if (process.env.NODE_ENV !== 'production') require('electron-reload')(__dirname,
 });
 
 let mainWindow;
+let batteryWindow;
 let data = {};
 
 // This method will be called when Electron has finished
@@ -208,10 +209,11 @@ function create_main_window() {
                     xbeeAPI.parser.on("data", function(frame) {
                         parse_data(frame.data);
                         mainWindow.webContents.send('serial_data', data);
+                        if (batteryWindow) batteryWindow.webContents.send('serial_data', data);
+                        mainWindow.webContents.send('serial_connected', true);
                     });
     
                     port.on('close', function() {
-                        //io.emit('serial_connected', false);
                         console.log('close');
                         connect = setInterval(connect_xbee, 1000);
                         return;
@@ -221,6 +223,32 @@ function create_main_window() {
         });
     }
 }
+
+function create_battery_window() {
+    batteryWindow = new BrowserWindow({
+        width: 600,
+        height: 330,
+        title: 'Batteries',
+        webPreferences: {
+          nodeIntegration: true
+      }
+    });
+
+    batteryWindow.loadFile(path.join(__dirname, 'views/battery.html'));
+
+    batteryWindow.on('closed', () => {
+        batteryWindow = null;
+    })
+}
+
+//=================================== Events =====================================//
+
+ipcMain.on('battery-click', (event) => {
+    if (batteryWindow == null) {
+        create_battery_window();
+    }
+    //batteryWindow.webContents.openDevTools();
+})
 
 //================================ Serial Parser ============================================//
 
