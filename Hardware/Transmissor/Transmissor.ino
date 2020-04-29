@@ -47,9 +47,9 @@ MCP_CAN CAN(spiCSPin);
 
 
 void setup() {
-  	Serial.begin(9600);
-  	Serial2.begin(9600);
-  	Serial3.begin(9600);
+  	Serial.begin(115200);
+  	Serial2.begin(115200);
+  	Serial3.begin(115200);
 
 	setup_frame();
 
@@ -58,21 +58,34 @@ void setup() {
     //    delay(100);
     //}
     Serial.println("CAN BUS  Init OK!");
+
+	//test
+	long lat = 6180292;
+	//long lng = -75607864;
+	long lng = -75507864;
+	data[3] = (0x000000FF)&lat;
+	data[4] = ((0x0000FF00)&lat)>>8;
+	data[5] = ((0x00FF0000)&lat)>>16;
+	data[6] = ((0xFF000000)&lat)>>24;
+	data[7] = (0x000000FF)&lng;
+	data[8] = ((0x0000FF00)&lng)>>8;
+	data[9] = ((0x00FF0000)&lng)>>16;
+	data[10] = ((0xFF000000)&lng)>>24;
 }
 
 void loop() {
 
 	//============== CAN ============//
 
-	if(CAN_MSGAVAIL == CAN.checkReceive()) {
-		fill_data_can();
-    }
+	//if(CAN_MSGAVAIL == CAN.checkReceive()) {
+	//	fill_data_can();
+    //}
 
 	// ============ GPS ==============//
   
-    if (Serial3.available()) {
-      	gps.encode(Serial3.read());
-    }
+    //if (Serial3.available()) {
+    //  	gps.encode(Serial3.read());
+    //}
 
 	// =========== Send frame =======//
 
@@ -80,9 +93,10 @@ void loop() {
   	if (current_time - final_time > 1000) {
 
 		//displayInfo();
-		fill_data_gps();
+		//fill_data_gps();
+		fill_data_test();
     	send();
-		memset(data,0,size_data);
+		//memset(data,0,size_data);		//reset data vector to 0
     
     	final_time = current_time;
   	}
@@ -193,4 +207,28 @@ void fill_data_can() {
 		data[19] = buf[3];	//least significant instantVolt byte
 		data[20] = buf[6];	//SOC
 	}
+}
+
+void fill_data_test() {
+	if (data[1] == 60) {
+		data[0]++;
+	}
+	if (data[0] == 24) {
+		data[0] = 0;
+	}
+	if (data[2] == 59) {
+		data[1]++;
+	}
+	if (data[1] == 60) {
+		data[1] = 0;
+	}
+	if (data[2] < 59) {
+		data[2]++;
+	} else { data[2] = 0; }
+	if (data[11] < 120) {
+		data[11]++;
+	} else { data[11] = 0; }
+	if (data[20] > 0) {
+		data[20]--;
+	} else { data[20] = 100; }
 }
