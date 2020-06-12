@@ -15,6 +15,7 @@ if (process.env.NODE_ENV !== 'production') require('electron-reload')(__dirname,
 
 let mainWindow;
 let batteryWindow;
+let databaseWindow;
 let data = {};
 
 // This method will be called when Electron has finished
@@ -224,6 +225,23 @@ function create_main_window() {
     }
 }
 
+function create_database_window() {
+    databaseWindow = new BrowserWindow({
+        width: 600,
+        height: 330,
+        title: 'Database',
+        webPreferences: {
+          nodeIntegration: true
+      }
+    });
+
+    databaseWindow.loadFile(path.join(__dirname, 'views/database.html'));
+
+    databaseWindow.on('closed', () => {
+        databaseWindow = null;
+    })
+}
+
 function create_battery_window() {
     batteryWindow = new BrowserWindow({
         width: 600,
@@ -241,13 +259,26 @@ function create_battery_window() {
     })
 }
 
+
 //=================================== Events =====================================//
+
+ipcMain.on('database-click', (event) => {
+    if (batteryWindow == null) {
+        create_database_window();
+    }
+    databaseWindow.webContents.openDevTools();
+})
 
 ipcMain.on('battery-click', (event) => {
     if (batteryWindow == null) {
         create_battery_window();
     }
     //batteryWindow.webContents.openDevTools();
+})
+
+ipcMain.on('local file', (event, path) => {
+    console.log(path);
+    event.reply('local file selected', path);
 })
 
 //================================ Serial Parser ============================================//
