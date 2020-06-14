@@ -1,30 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="./css/database.css">
-    <title>Database</title>
+	<title>Database</title>
 </head>
+
 <body>
 	<header>
-        <h2 class="header">Database</h2>
+		<h2 class="header">Database</h2>
 	</header>
 	<div class="container">
-        <section id="local_storage">
-			<h3>Local Storage</h3>       
-			<div id="local_buttons">
-				<button id="local_create_btn" class="btn btn-outline-primary local_btn">Create File</button>
-				<button id="local_select_btn" class="btn btn-outline-primary local_btn">Select File</button>
-				<button id="local_start_btn" class="btn btn-outline-secondary local_btn disabled">Start storage</button>
+		<div class="content">
+			<div id="buttons">
+				<button id="create_btn" class="btn btn-outline-primary btn">Create Table</button>
+				<button id="start_btn" class="btn btn-outline-secondary btn disabled">Start storage</button>
 			</div>
-			<div id="local_indicator">
-				<div class="state_indicator" id="local_state_indicator"></div>
-				<h4 id="local_selection">No File selected.</h4>
-			</div>    
-        </section>
+			<div id="table_selected_indicator_wrap">
+				<div class="state_indicator" id="table_selected_indicator"></div>
+				<h4 id="table_selected_text">No table selected.</h4>
+			</div>
+			<div class="table">
+				<table id="table_list">
+					<thead>
+						<tr>Database Tables</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+	</div>
 	<script src="./js/database.js"></script>
 </body>
+
 </html>

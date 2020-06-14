@@ -1,30 +1,28 @@
-* {
-    margin: 0;
-    padding: 0;
-}
-
 header {
+    overflow: hidden;
     text-align: center;
     background-color: rgb(35, 34, 45);
     color: rgb(238, 236, 236);
+    top: 0;
+    width: 100%;
+    position: fixed;
+    z-index: 10;
 }
 
-#local_storage {
-    display: grid;
-    grid-template-rows: auto auto;
-    justify-content: stretch;
+.content {
+    margin-top: 60px;
 }
 
-#local_buttons {
+#buttons {
     margin-top: 10px;
     display: grid;
-    grid-template-columns: auto auto auto;
+    grid-template-columns: auto auto;
     position: relative;
     right: 10px;
     margin-bottom: 4px;
 }
 
-.local_btn {
+.btn {
     margin: 0px 10px 0px 10px;
 }
 
@@ -37,11 +35,15 @@ header {
     border-radius: 50%;
 }
 
-#local_state_indicator {
+#table_selected_indicator {
     background-color: rgb(230, 114, 114);
 }
 
-#local_selection {
+#table_selected_text {
     display: inline-block;
     font-size: 10px;
 }
+
+table, th, td {
+    border: 1px solid black;
+  }
