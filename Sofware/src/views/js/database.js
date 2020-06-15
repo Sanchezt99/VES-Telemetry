@@ -1,4 +1,5 @@
 const { ipcRenderer } = require('electron');
+const prompt = require('electron-prompt');
 
 const create_btn = document.getElementById('create_btn');
 const start_btn = document.getElementById('start_btn');
@@ -11,7 +12,19 @@ var table_is_selected = false;
 get_tables();
 
 create_btn.addEventListener('click', () => {
-
+    prompt({
+        title: 'Create Table',
+        label: 'Table Name',
+        inputAttrs: {
+            type: 'text',
+            required: true
+        },
+        type: 'input'
+    })
+    .then((r) => {
+        ipcRenderer.send('create table', r);
+    })
+    .catch(console.error);
 });
 
 start_btn.addEventListener('click', () => {
@@ -57,9 +70,22 @@ ipcRenderer.on('tables update', (event, tables) => {
         trow.appendChild(table_name_field);
         trow.appendChild(action_field);
         tbody.appendChild(trow);
+
+        select_button.addEventListener('click', () => {
+            
+        });
     });
 
     table_list.appendChild(tbody);
+});
+
+ipcRenderer.on('table created', (event, name) => {
+    alert(`${name} table created successfully.`);
+    get_tables();
+});
+
+ipcRenderer.on('table not created', (event) => {
+    alert('Table has not been created');
 });
 
 function get_tables() {

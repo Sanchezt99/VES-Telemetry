@@ -15,3 +15,14 @@ ipcMain.on('get tables', (event) => {
         event.reply('tables update', tables);
     });
 });
+
+ipcMain.on('create table', (event, name) => {
+    r.db('KRATOS-VES').tableCreate(name).run(connection, (err, res) => {
+        if (err) {
+            event.reply('table not created');
+            throw err;
+        }
+        console.log(res);
+        event.reply('table created', name);
+    });
+});
