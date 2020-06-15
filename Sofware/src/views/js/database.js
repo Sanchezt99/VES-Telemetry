@@ -39,9 +39,21 @@ ipcRenderer.on('tables update', (event, tables) => {
         let table_name_field = document.createElement('td');
         let action_field = document.createElement('td');
         let table_name_field_text = document.createTextNode(table);
+        let select_button = document.createElement('button');
+        let delete_button = document.createElement('button');
+        let select_button_text = document.createTextNode('Select');
+        let delete_button_text = document.createTextNode('Delete');
+
+        action_field.classList.add('action_field');
+        table_name_field.classList.add('table_name_field');
+        select_button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+        delete_button.classList.add('btn', 'btn-outline-danger', 'btn-sm');
 
         table_name_field.appendChild(table_name_field_text);
-        //add action
+        select_button.appendChild(select_button_text);
+        delete_button.appendChild(delete_button_text);
+        action_field.appendChild(select_button);
+        action_field.appendChild(delete_button);
         trow.appendChild(table_name_field);
         trow.appendChild(action_field);
         tbody.appendChild(trow);

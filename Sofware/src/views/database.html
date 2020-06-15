@@ -17,17 +17,20 @@
 	<div class="container">
 		<div class="content">
 			<div id="buttons">
-				<button id="create_btn" class="btn btn-outline-primary btn">Create Table</button>
-				<button id="start_btn" class="btn btn-outline-secondary btn disabled">Start storage</button>
+				<button id="create_btn" class="btn btn-outline-primary">Create Table</button>
+				<button id="start_btn" class="btn btn-outline-secondary disabled">Start storage</button>
 			</div>
 			<div id="table_selected_indicator_wrap">
 				<div class="state_indicator" id="table_selected_indicator"></div>
 				<h4 id="table_selected_text">No table selected.</h4>
 			</div>
-			<div class="table">
-				<table id="table_list">
-					<thead>
-						<tr>Database Tables</tr>
+			<div class="table_wraper table-wrapper-scroll-y my-custom-scrollbar">
+				<table class="table table-striped mb-0" id="table_list">
+					<thead class="thead-dark">
+						<tr>
+							<th scope="col">Database Tables</th>
+							<th scope="col"></th>
+						</tr>
 					</thead>
 				</table>
 			</div>

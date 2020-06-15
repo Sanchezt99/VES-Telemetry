@@ -44,6 +44,29 @@ header {
     font-size: 10px;
 }
 
-table, th, td {
-    border: 1px solid black;
-  }
+table {
+    text-align: center;
+}
+
+td {
+    height: 10px;
+    padding: 0;
+}
+
+.table_name_field {
+    font-size: 1.2rem;
+}
+
+.action_field {
+    text-align: right;
+}
+
+.my-custom-scrollbar {
+    position: relative;
+    height: 200px;
+    overflow: auto;
+}
+
+.table-wrapper-scroll-y {
+    display: block;
+}

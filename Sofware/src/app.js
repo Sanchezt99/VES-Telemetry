@@ -171,7 +171,7 @@ function create_main_window() {
     // and load the index.html of the app.
     mainWindow.loadFile(path.join(__dirname, 'views/main.html'));
 
-    mainWindow.webContents.openDevTools();
+    //mainWindow.webContents.openDevTools();
 
     // Emitido cuando la ventana es cerrada.
     mainWindow.on('closed', () => {
@@ -233,7 +233,7 @@ function create_main_window() {
 function create_database_window() {
     databaseWindow = new BrowserWindow({
         width: 600,
-        height: 330,
+        height: 380,
         title: 'Database',
         webPreferences: {
           nodeIntegration: true
@@ -271,7 +271,7 @@ ipcMain.on('database-click', (event) => {
     if (batteryWindow == null) {
         create_database_window();
     }
-    databaseWindow.webContents.openDevTools();
+    //databaseWindow.webContents.openDevTools();
 });
 
 ipcMain.on('battery-click', (event) => {
