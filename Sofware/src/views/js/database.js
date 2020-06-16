@@ -7,7 +7,8 @@ const table_selected_indicator = document.getElementById('table_selected_indicat
 const table_selected_text = document.getElementById('table_selected_text');
 const table_list = document.getElementById('table_list');
 
-var table_is_selected = false;
+let is_table_selected = false;
+let recording = false;
 
 get_tables();
 
@@ -28,20 +29,18 @@ create_btn.addEventListener('click', () => {
 });
 
 start_btn.addEventListener('click', () => {
-    ipcRenderer.send('start storage', true);
-});
-
-ipcRenderer.on('storage state', (event, state) => {
-    if (table_is_selected) {
-        start_btn.innerHTML = state ? 'Stop storage' : 'Start storage'; 
-        start_btn.className = state ? "btn btn-outline-danger local_btn" : "btn btn-outline-success local_btn";
+    if (is_table_selected) {
+        if (!recording) {
+            recording = true;
+            ipcRenderer.send('start recording');
+            set_start_btn();
+            start_btn.classList.add('active');
+        } else {
+            recording = false;
+            ipcRenderer.send('stop recording');
+            set_start_btn();
+        }
     }
-});
-
-ipcRenderer.on('local file selected', (event, path) => {
-    table_selected_text.innerHTML = `File selected: ${path}`;
-    local_indicator.style.backgroundColor = 'rgb(86, 209, 82)';
-    file_is_selected = true;
 });
 
 ipcRenderer.on('tables update', (event, tables) => {
@@ -72,7 +71,7 @@ ipcRenderer.on('tables update', (event, tables) => {
         tbody.appendChild(trow);
 
         select_button.addEventListener('click', () => {
-            
+            ipcRenderer.send('table selected', table);
         });
     });
 
@@ -88,6 +87,19 @@ ipcRenderer.on('table not created', (event) => {
     alert('Table has not been created');
 });
 
+ipcRenderer.on('table selected', (event, name) => {
+    alert(`${name } table has been selected.`);
+    table_selected_text.innerHTML = `Table selected: ${name}`;
+    table_selected_indicator.style.backgroundColor = 'rgb(86, 209, 82)';
+    is_table_selected = true;
+    start_btn.classList.remove('disabled');
+});
+
 function get_tables() {
     ipcRenderer.send('get tables');
+}
+
+function set_start_btn() {
+    start_btn.innerHTML = recording ? 'Stop storage' : 'Start storage'; 
+    start_btn.className = recording ? "btn btn-outline-danger local_btn" : "btn btn-outline-success local_btn";
 }

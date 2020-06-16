@@ -1,11 +1,13 @@
 const r = require('rethinkdb');
 const {ipcMain} = require('electron');
 
-var connection = null;
+let connection = null;
+let table_selected = null;
 
 r.connect({host: 'localhost', port: 28015, db: 'KRATOS-VES'}, (err, conn) => {
     if (err) throw err;
     connection = conn;
+    module.exports.database_connection = connection;
     console.log('Database connected.');
 });
 
@@ -26,3 +28,17 @@ ipcMain.on('create table', (event, name) => {
         event.reply('table created', name);
     });
 });
+
+ipcMain.on('table selected', (event, name) => {
+    table_selected = name;
+    event.reply('table selected', name);
+});
+
+function insert(data) {
+    r.table(table_selected).insert(data).run(connection, (err, result) => {
+        if (err) throw err;
+        console.log(JSON.stringify(result, null, 2));
+    });
+}
+
+module.exports.insert = insert;

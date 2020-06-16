@@ -19,7 +19,7 @@ let mainWindow;
 let batteryWindow;
 let databaseWindow;
 
-let local_storage_file_path = null;
+let recording = false;
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -181,53 +181,6 @@ function create_main_window() {
         mainWindow = null;
     });
 
-    //==================================== Serial connection ===========================//
-
-    var xbeeAPI = new xbee_api.XBeeAPI({
-        api_mode: 2
-    });
-      
-    let connect = setInterval(connect_xbee, 1000);
-
-    function connect_xbee() {
-        console.log('Scanning ports...');
-        SerialPort.list().then(ports => {
-            ports.forEach(port => {
-                if (port.manufacturer != undefined && port.manufacturer.includes('FTDI')) { //'FTDI' id the xbee explorer manufacturer
-                    port = new SerialPort(port.path, {
-                        baudRate: 115200,
-                        parser: xbeeAPI.rawParser()
-                    });
-    
-                    port.on('error', function(err) {
-                        console.log('Error: ', err.message);
-                    });
-    
-                    port.on('open', () => {
-                        console.log('Serial port opened.');
-                        clearInterval(connect);
-                    });
-    
-                    port.pipe(xbeeAPI.parser);
-    
-                    xbeeAPI.parser.on("data", function(frame) {
-                        let data = parse_data(frame.data);
-
-                        mainWindow.webContents.send('serial_data', data);
-                        console.log(data);
-                        if (batteryWindow) batteryWindow.webContents.send('serial_data', data);
-                        mainWindow.webContents.send('serial_connected', true);
-                    });
-    
-                    port.on('close', function() {
-                        console.log('close');
-                        connect = setInterval(connect_xbee, 1000);
-                        return;
-                    });
-                } 
-            });
-        });
-    }
 }
 
 function create_database_window() {
@@ -264,6 +217,64 @@ function create_battery_window() {
     })
 }
 
+//==================================== Serial connection ===========================//
+
+var xbeeAPI = new xbee_api.XBeeAPI({
+    api_mode: 2
+});
+  
+let connect = setInterval(connect_xbee, 1000);
+
+function connect_xbee() {
+    console.log('Scanning ports...');
+    SerialPort.list().then(ports => {
+        ports.forEach(port => {
+            if (port.manufacturer != undefined && port.manufacturer.includes('FTDI')) { //'FTDI' id the xbee explorer manufacturer
+                port = new SerialPort(port.path, {
+                    baudRate: 115200,
+                    parser: xbeeAPI.rawParser()
+                });
+
+                port.on('error', function(err) {
+                    console.log('Error: ', err.message);
+                });
+
+                port.on('open', () => {
+                    console.log('Serial port opened.');
+                    clearInterval(connect);
+                });
+
+                port.pipe(xbeeAPI.parser);
+
+                xbeeAPI.parser.on("data", function(frame) {
+                    let data = parse_data(frame.data);
+
+                    ipcMain.on('start recording', (event) => {
+                        recording = true;
+                    });
+
+                    ipcMain.on('stop recording', (event) => {
+                        recording = false;
+                    });
+
+                    if (recording) {
+                        database.insert(data);
+                    }
+
+                    if (mainWindow) mainWindow.webContents.send('serial_data', data);
+                    if (mainWindow) mainWindow.webContents.send('serial_connected', true);
+                    if (batteryWindow) batteryWindow.webContents.send('serial_data', data);
+                });
+
+                port.on('close', function() {
+                    console.log('close');
+                    connect = setInterval(connect_xbee, 1000);
+                    return;
+                });
+            } 
+        });
+    });
+}
 
 //=================================== Events =====================================//
 
