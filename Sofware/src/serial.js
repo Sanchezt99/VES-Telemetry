@@ -1,4 +1,4 @@
-const app = require('./app.js');
+const {get_mainWindow} = require('./app.js');
 const {ipcMain} = require('electron');
 const {parse_data} = require('./parser.js');
 const SerialPort = require('serialport');
@@ -49,14 +49,12 @@ function connect_xbee() {
                         database.insert(data);
                     }
 
-                    let mainWindow = app.get_mainWindow();
-                    let batteryWindow = app.get_batteryWindow();
-                    
+                    let mainWindow = get_mainWindow();
+
                     if (mainWindow) {
                         mainWindow.webContents.send('serial_data', data);
                         mainWindow.webContents.send('serial_connected', true);
                     }
-                    if (batteryWindow) batteryWindow.webContents.send('serial_data', data);
                 });
 
                 port.on('close', function() {

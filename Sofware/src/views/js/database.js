@@ -1,4 +1,4 @@
-const { ipcRenderer } = require('electron');
+const {ipcRenderer} = require('electron');
 const prompt = require('electron-prompt');
 
 const create_btn = document.getElementById('create_btn');
@@ -88,7 +88,7 @@ ipcRenderer.on('table not created', (event) => {
 });
 
 ipcRenderer.on('table selected', (event, name) => {
-    alert(`${name } table has been selected.`);
+    alert(`${name} table has been selected.`);
     table_selected_text.innerHTML = `Table selected: ${name}`;
     table_selected_indicator.style.backgroundColor = 'rgb(86, 209, 82)';
     is_table_selected = true;
@@ -101,5 +101,5 @@ function get_tables() {
 
 function set_start_btn() {
     start_btn.innerHTML = recording ? 'Stop storage' : 'Start storage'; 
-    start_btn.className = recording ? "btn btn-outline-danger local_btn" : "btn btn-outline-success local_btn";
+    start_btn.className = recording ? "btn btn-outline-danger" : "btn btn-outline-success";
 }

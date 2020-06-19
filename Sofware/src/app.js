@@ -6,8 +6,6 @@ if (process.env.NODE_ENV !== 'production') require('electron-reload')(__dirname,
 });
 
 let mainWindow = null; 
-let batteryWindow = null;
-let databaseWindow = null;
 
 app.on('ready', () => {
     create_main_window();
@@ -29,8 +27,6 @@ app.on('window-all-closed', () => {
       app.quit()
     }
 });
-
-//=============================== Windows =================================//
 
 function create_main_window() {
     
@@ -162,63 +158,6 @@ function create_main_window() {
 
 }
 
-function create_database_window() {
-    databaseWindow = new BrowserWindow({
-        width: 600,
-        height: 380,
-        title: 'Database',
-        webPreferences: {
-          nodeIntegration: true
-      }
-    });
-
-    databaseWindow.loadFile(path.join(__dirname, 'views/database.html'));
-
-    databaseWindow.on('closed', () => {
-        databaseWindow = null;
-    })
-}
-
-function create_battery_window() {
-    batteryWindow = new BrowserWindow({
-        width: 600,
-        height: 330,
-        title: 'Batteries',
-        webPreferences: {
-          nodeIntegration: true
-      }
-    });
-
-    batteryWindow.loadFile(path.join(__dirname, 'views/battery.html'));
-
-    batteryWindow.on('closed', () => {
-        batteryWindow = null;
-    })
-}
-
-//=================================== Events =====================================//
-
-ipcMain.on('database-click', (event) => {
-    if (batteryWindow == null) {
-        create_database_window();
-    }
-    //databaseWindow.webContents.openDevTools();
-});
-
-ipcMain.on('battery-click', (event) => {
-    if (batteryWindow == null) {
-        create_battery_window();
-    }
-    //batteryWindow.webContents.openDevTools();
-});
-
-ipcMain.on('local file', (event, path) => {
-    event.reply('local file selected', path);
-    local_storage_file_path = path;
-});
-
-//================================== Functions ==================================//
-
 function get_mainWindow() {
     return mainWindow;
 }
@@ -228,6 +167,5 @@ function get_batteryWindow() {
 }
 
 module.exports = {
-    get_mainWindow,
-    get_batteryWindow
+    get_mainWindow
 }
