@@ -1,4 +1,4 @@
-const { ipcRenderer } = require('electron');
+const {ipcRenderer} = require('electron');
 
 var database_button = document.getElementById('database_button');
 var battery_button = document.getElementById('battery');
@@ -7,6 +7,7 @@ var serial_indicator = document.getElementById('serial_indicator');
 var database_indicator = document.getElementById('database_indicator');
 var map;
 var marker = null;
+let serial_connection = false;
 
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
@@ -15,12 +16,12 @@ function initMap() {
     });
 }
 
-function serial_active_indicator() {
-    serial_indicator.style.backgroundColor = 'rgba(48, 190, 55, 0.7)';
-}
-
-function serial_desactive_indicator() {
-    serial_indicator.style.backgroundColor = 'rgba(165, 165, 165, .7)';
+function set_serial_indicator(state) {
+    if (state) {
+        serial_indicator.style.backgroundColor = 'rgba(48, 190, 55, 0.7)';
+    } else {
+        serial_indicator.style.backgroundColor = 'rgba(165, 165, 165, .7)';
+    }
 }
 
 function database_active_indicator() {
@@ -43,11 +44,11 @@ general_button.addEventListener('click', () => {
     ipcRenderer.send('general-click');
 }); 
 
-ipcRenderer.on('serial_connected', (event, message) => {
-    if (message) {
-        serial_active_indicator();
+ipcRenderer.on('serial_connected', (event, state) => {
+    if (state) {
+        set_serial_indicator(state);
     } else {
-        serial_desactive_indicator();
+        set_serial_indicator(state);
     }
 });
 

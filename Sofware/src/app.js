@@ -1,4 +1,5 @@
 const {app, BrowserWindow, Menu, MenuItem, ipcMain} = require('electron');
+const serial = require('./serial.js');
 const path = require('path');
 
 if (process.env.NODE_ENV !== 'production') require('electron-reload')(__dirname, {
@@ -11,7 +12,7 @@ let databaseWindow = null;
 
 app.on('ready', () => {
     create_main_window();
-    const serial = require('./serial.js'); //This inicialize the serial connection. 
+    serial.set_mainWindow(mainWindow);
 });
 
 app.on('activate', () => {
@@ -158,6 +159,7 @@ function create_main_window() {
         // en un vector si tu aplicación soporta múltiples ventanas, este es el momento
         // en el que deberías borrar el elemento correspondiente.
         mainWindow = null;
+        serial.set_mainWindow(mainWindow);
     });
 
 }
@@ -168,8 +170,8 @@ function create_database_window() {
         height: 380,
         title: 'Database',
         webPreferences: {
-          nodeIntegration: true
-      }
+            nodeIntegration: true
+        }
     });
 
     databaseWindow.loadFile(path.join(__dirname, 'views/database.html'));
@@ -189,24 +191,26 @@ function create_battery_window() {
       }
     });
 
+    serial.set_batteryWindow(batteryWindow);
     batteryWindow.loadFile(path.join(__dirname, 'views/battery.html'));
 
     batteryWindow.on('closed', () => {
         batteryWindow = null;
+        serial.set_batteryWindow(batteryWindow);
     })
 }
 
 //=================================== Events =====================================//
 
 ipcMain.on('database-click', (event) => {
-    if (batteryWindow == null) {
+    if (databaseWindow === null) {
         create_database_window();
     }
     //databaseWindow.webContents.openDevTools();
 });
 
 ipcMain.on('battery-click', (event) => {
-    if (batteryWindow == null) {
+    if (batteryWindow === null) {
         create_battery_window();
     }
     //batteryWindow.webContents.openDevTools();
