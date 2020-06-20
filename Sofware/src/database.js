@@ -21,7 +21,6 @@ ipcMain.on('get tables', (event) => {
 ipcMain.on('create table', (event, name) => {
     r.db('KRATOS-VES').tableCreate(name).run(connection, (err, res) => {
         if (err) {
-            event.reply('table not created');
             throw err;
         }
         console.log(res);
@@ -32,6 +31,16 @@ ipcMain.on('create table', (event, name) => {
 ipcMain.on('table selected', (event, name) => {
     table_selected = name;
     event.reply('table selected', name);
+});
+
+ipcMain.on('table deleted', (event, name) => {
+    r.db('KRATOS-VES').tableDrop(name).run(connection, (err, res) => {
+        if (err) {
+            throw err;
+        }
+        event.reply('table deleted', name);
+        console.log(res);
+    });
 });
 
 function insert(data) {
