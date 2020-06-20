@@ -8,10 +8,10 @@ const table_selected_text = document.getElementById('table_selected_text');
 const table_list = document.getElementById('table_list');
 const tbody = document.getElementById('tbody');
 
-let is_table_selected = false;
+let table_selected = null;
 let recording = false;
 
-ipcRenderer.send('get tables');
+ipcRenderer.send('get data');
 
 create_btn.addEventListener('click', () => {
     prompt({
@@ -32,24 +32,34 @@ create_btn.addEventListener('click', () => {
 });
 
 start_btn.addEventListener('click', () => {
-    if (is_table_selected) {
+    if (table_selected !== null) {
         if (!recording) {
             recording = true;
-            ipcRenderer.send('start recording');
+            ipcRenderer.send('record', recording);
             set_start_btn();
-            start_btn.classList.add('active');
+            console.log('active');
         } else {
             recording = false;
-            ipcRenderer.send('stop recording');
+            ipcRenderer.send('record', recording);
             set_start_btn();
         }
-    }
+    }  
 });
 
-ipcRenderer.on('tables update', (event, tables) => {
+ipcRenderer.on('data update', (event, data) => {
+    tables = data[0];
     tables.forEach(table => {
         create_list_node(table);
     });
+    table_selected = data[1];
+    recording = data[2];
+
+    if (table_selected !== null) {
+        table_selected_text.innerHTML = `Table selected: ${table_selected}`;
+        table_selected_indicator.style.backgroundColor = 'rgb(86, 209, 82)';
+        start_btn.classList.remove('disabled');
+        set_start_btn();
+    }
 });
 
 ipcRenderer.on('table created', (event, table) => {
@@ -63,16 +73,20 @@ ipcRenderer.on('table deleted', (event, name) => {
 });
 
 ipcRenderer.on('table selected', (event, name) => {
-    alert(`${name } table has been selected.`);
+    alert(`${name} table has been selected.`);
+    table_selected = name;
     table_selected_text.innerHTML = `Table selected: ${name}`;
     table_selected_indicator.style.backgroundColor = 'rgb(86, 209, 82)';
-    is_table_selected = true;
     start_btn.classList.remove('disabled');
+    set_start_btn();
 });
 
 function set_start_btn() {
-    start_btn.innerHTML = recording ? 'Stop storage' : 'Start storage'; 
-    start_btn.className = recording ? "btn btn-outline-danger local_btn" : "btn btn-outline-success local_btn";
+    if (table_selected !== null) {
+        start_btn.classList.add('active');
+        start_btn.innerHTML = recording ? 'Stop storage' : 'Start storage'; 
+        start_btn.className = recording ? "btn btn-outline-danger" : "btn btn-outline-success";
+    } 
 }
 
 function create_list_node(table) {

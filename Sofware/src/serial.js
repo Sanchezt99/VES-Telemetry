@@ -5,8 +5,6 @@ const SerialPort = require('serialport');
 const xbee_api = require('xbee-api');
 const database = require('./database.js');
 
-let recording = false;
-
 var xbeeAPI = new xbee_api.XBeeAPI({
     api_mode: 2
 });
@@ -37,15 +35,7 @@ function connect_xbee() {
                 xbeeAPI.parser.on("data", function(frame) {
                     let data = parse_data(frame.data);
 
-                    ipcMain.on('start recording', (event) => {
-                        recording = true;
-                    });
-
-                    ipcMain.on('stop recording', (event) => {
-                        recording = false;
-                    });
-
-                    if (recording) {
+                    if (database.get_recording_state()) {
                         database.insert(data);
                     }
 
