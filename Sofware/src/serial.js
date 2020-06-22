@@ -11,7 +11,6 @@ var xbeeAPI = new xbee_api.XBeeAPI({
 let mainWindow = null;
 let batteryWindow = null;
 let connect = setInterval(connect_xbee, 1000);
-let serial_connection = false;
 
 function connect_xbee() {
     console.log('Scanning ports...');
@@ -30,7 +29,6 @@ function connect_xbee() {
                 port.on('open', () => {
                     console.log('Serial port opened.');
                     clearInterval(connect);
-                    serial_connection = true;
                     mainWindow.webContents.send('serial_connected', true);
                 });
 
@@ -43,16 +41,13 @@ function connect_xbee() {
                         database.insert(data);
                     }
                     
-                    mainWindow.webContents.send('serial_data', data);
-                    mainWindow.webContents.send('serial_connected', true);
-
+                    if (mainWindow !== null) mainWindow.webContents.send('serial_data', data);
                     if (batteryWindow !== null) batteryWindow.webContents.send('serial_data', data);
                 });
 
                 port.on('close', function() {
                     console.log('close');
                     connect = setInterval(connect_xbee, 1000);
-                    serial_connection = false;
                     mainWindow.webContents.send('serial_connected', false);
                     return;
                 });
@@ -71,5 +66,5 @@ function set_batteryWindow(window) {
 
 module.exports = {
     set_mainWindow,
-    set_batteryWindow
+    set_batteryWindow,
 }
