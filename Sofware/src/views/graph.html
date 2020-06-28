@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="assets/bootstrap.min.css">
     <link rel="stylesheet" href="css/graph.css">
+    <script src="https://kit.fontawesome.com/0de8a67811.js"></script>
     <title>Graphic</title>
 </head>
 
@@ -16,7 +17,7 @@
     <div id="graph_selection">
         <div id="variables_wrapper">
             <div class="dropdown">
-                <button id="y_axis_dropdown" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                <button title="Y-axis variable" id="y_axis_dropdown" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Y-axis Variable
                 </button>
@@ -24,13 +25,19 @@
             </div>
             <h3>VS</h3>
             <div class="dropdown">
-                <button id="x_axis_dropdown" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button title="X-axis variable" id="x_axis_dropdown" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   X-axis Variable
                 </button>
                 <div id="x_axis_dropdown_menu" class="dropdown-menu" aria-labelledby="dropdownMenuButton"></div>
               </div>
         </div>
-        <div class="graph_type_wrapper"></div>
+        <div id="graph_type_wrapper">
+            <button id="line_btn" class="chart_type_button" title="Line chart"><i class="fas fa-chart-line"></i></button>
+            <button id="area_btn" class="chart_type_button" title="Area chart"><i class="fas fa-chart-area"></i></button>
+        </div>
+        <div id="start_btn_wrapper">
+            <button type="button" id="start_btn" class="btn btn-secondary btn-block">Start</button>
+        </div>
     </div>
     <script src="./js/graph.js"></script>
     <script src="./assets/jquery.slim.min.js"></script>
