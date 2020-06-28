@@ -3,6 +3,7 @@ const {ipcRenderer} = require('electron');
 var database_button = document.getElementById('database_button');
 var battery_button = document.getElementById('battery');
 var general_button = document.getElementById('general');
+var graph_button = document.getElementById('graph');
 var serial_indicator = document.getElementById('serial_indicator');
 var database_indicator = document.getElementById('database_indicator');
 var map;
@@ -48,6 +49,10 @@ battery_button.addEventListener('click', () => {
 
 general_button.addEventListener('click', () => {
     ipcRenderer.send('general-click');
+});
+
+graph_button.addEventListener('click', () => {
+    ipcRenderer.send('graph-click');
 }); 
 
 ipcRenderer.on('serial_connected', (event, state) => {

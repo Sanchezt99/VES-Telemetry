@@ -29,6 +29,14 @@ nav button:hover {
     color: rgb(129, 42, 170);
 }
 
+.indicators {
+    position: absolute;
+    top: 60px;
+    left: 5px;
+    width: auto;
+    height: auto;
+}
+
 #solar_panel {
     font-size: 22px;
 }
@@ -47,11 +55,9 @@ nav button:hover {
 }
 
 #serial_indicator {
-    position: absolute;
-    left: 12px;
-    top: 70px;
     width: 13px;
     height: 13px;
+    margin: 10px;
     border-radius: 50%;
     border: 1px solid rgb(109, 109, 109);
     background-color: rgba(165, 165, 165, .7);
@@ -67,11 +73,9 @@ nav button:hover {
 }
 
 #database_indicator {
-    position: absolute;
-    left: 12px;
-    top: 93px;
     width: 13px;
     height: 13px;
+    margin: 10px;
     border-radius: 50%;
     border: 1px solid rgb(109, 109, 109);
     background-color: rgba(165, 165, 165, .7);

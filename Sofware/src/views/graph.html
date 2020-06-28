@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/bootstrap.min.css">
+    <link rel="stylesheet" href="css/graph.css">
+    <title>Graphic</title>
+</head>
+
+<body>
+    <header>
+        <h2 class="header">Graphic</h2>
+    </header>
+    <div id="graph_selection">
+        <div id="variables_wrapper">
+            <div class="dropdown">
+                <button id="y_axis_dropdown" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Y-axis Variable
+                </button>
+                <div id="y_axis_dropdown_menu" class="dropdown-menu" aria-labelledby="dropdownMenuButton"></div>
+            </div>
+            <h3>VS</h3>
+            <div class="dropdown">
+                <button id="x_axis_dropdown" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  X-axis Variable
+                </button>
+                <div id="x_axis_dropdown_menu" class="dropdown-menu" aria-labelledby="dropdownMenuButton"></div>
+              </div>
+        </div>
+        <div class="graph_type_wrapper"></div>
+    </div>
+    <script src="./js/graph.js"></script>
+    <script src="./assets/jquery.slim.min.js"></script>
+    <script src="./assets/jquery.min.js"></script>
+    <script src="./assets/popper.min.js"></script>
+    <script src="./assets/bootstrap.min.js"></script>
+</body>
+
+</html>

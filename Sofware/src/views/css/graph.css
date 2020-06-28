@@ -1,0 +1,21 @@
+header {
+    overflow: hidden;
+    text-align: center;
+    background-color: rgb(35, 34, 45);
+    color: rgb(238, 236, 236);
+    top: 0;
+    width: 100%;
+    position: fixed;
+    z-index: 10;
+}
+
+#graph_selection {
+    position: relative;
+    top: 80px;
+}
+
+#variables_wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    text-align: center;
+}
