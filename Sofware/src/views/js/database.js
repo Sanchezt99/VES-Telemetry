@@ -11,7 +11,7 @@ const tbody = document.getElementById('tbody');
 let table_selected = null;
 let recording = false;
 
-ipcRenderer.send('get data');
+ipcRenderer.send('get tables');
 
 create_btn.addEventListener('click', () => {
     prompt({

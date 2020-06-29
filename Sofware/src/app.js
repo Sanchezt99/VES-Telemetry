@@ -226,7 +226,7 @@ ipcMain.on('battery-click', (event) => {
 ipcMain.on('graph-click', (event) => {
     let graphWin = new BrowserWindow({
         width: 600,
-        height: 330,
+        height: 350,
         title: 'Graphic',
         minWidth: 600,
         minHeight: 330,

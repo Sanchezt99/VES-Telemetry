@@ -42,13 +42,13 @@ function parse_twoBytes(byte0, byte1) {
 
 ipcMain.on('get variables', (event) => {
     let variables = [
-        'time',
+        'timestamp',
         'speed',
         'minVolt',
         'maxVolt',
         'current',
         'instantVolt',
-        'charge state'
+        'soc'
     ];
     event.reply('variables', variables);
 });

@@ -14,7 +14,7 @@ r.connect({host: 'localhost', port: 28015, db: 'KRATOS-VES'}, (err, conn) => {
     console.info('Database connected.');
 });
 
-ipcMain.on('get data', (event) => {
+ipcMain.on('get tables', (event) => {
     r.db('KRATOS-VES').tableList().run(connection, (err, tables) => {
         if (err) throw err;
         data = [tables, table_selected, recording];
@@ -52,6 +52,15 @@ ipcMain.on('table deleted', (event, name) => {
 
 ipcMain.on('record', (event, state) => {
     recording = state;
+});
+
+ipcMain.on('get data', (event) => {
+    if (table_selected !== null) {
+        r.db('KRATOS-VES').table(table_selected).orderBy('timestamp').run(connection, (err, cursor) => {
+            if (err) throw err;
+            event.reply('data', cursor);
+        });
+    }
 });
 
 function insert(data) {
