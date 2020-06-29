@@ -11,20 +11,21 @@ header {
 
 #graph_selection {
     position: relative;
-    top: 80px;
+    top: 90px;
 }
 
-#variables_wrapper {
-    display: grid;
+.dropdown {
     width: 80%;
     margin-left: auto;
     margin-right: auto;
-    grid-template-columns: repeat(3, auto);
+    display: grid;
+    grid-template-columns: auto;
     text-align: center;
+    width: 70%;
 }
 
 #graph_type_wrapper {
-    margin-top: 20px;
+    margin-top: 30px;
     margin-left: auto;
     margin-right: auto;
     width: 40%;
@@ -77,6 +78,6 @@ button:hover {
 }
 
 #chart_wrapper {
-    margin-top: 50px;
+    margin-top: 40px;
     display: none;
 }
