@@ -16,10 +16,14 @@ const chart_wrapper = document.getElementById('chart_wrapper');
 const ctx = document.getElementById('myChart').getContext('2d');
 
 var var_selected = null;
+var var_selected_2 = null;
 var graph_type_selected = null;
+var variables = [];
 var chart;
 var graph_data = [];
+var graph_data_2 = [];
 var labels = [];
+
 
 var speed_gradient = ctx.createLinearGradient(10,10,10,350);
 speed_gradient.addColorStop(0,'rgba(247, 255, 0, 0.5)');
@@ -36,32 +40,68 @@ const var_color_code = {
 
 ipcRenderer.send('get variables');
 
-ipcRenderer.on('variables', (event, variables) => {
+ipcRenderer.on('variables', (event, vars) => {
+    variables = vars;
+    set_dropdown(dropdown_menu, true);
+    set_dropdown(dropdown_menu_plus, false);
+});
+
+
+function set_dropdown(dropdown, is_main) {
     variables.forEach(element => {
         if (element !== 'timestamp') {
             let variable = document.createElement('a');
-            let variable_plus = document.createElement('a');
             let variable_name = document.createTextNode(element);
-            let variable_name_plus = document.createTextNode(element);
 
             variable.classList.add('dropdown-item');
-            variable_plus.classList.add('dropdown-item');
-
             variable.appendChild(variable_name);
-            variable_plus.appendChild(variable_name_plus);
-            dropdown_menu.appendChild(variable);
-            dropdown_menu_plus.appendChild(variable_plus);
+            dropdown.appendChild(variable);
 
-            variable.addEventListener('click', () => {
-                dropdownMenuButton.classList.remove('btn-secondary');
-                dropdownMenuButton.classList.add('btn-primary');
-                dropdownMenuButton.innerHTML = element;
-                var_selected = element;
-                set_start_btn();
-            });
+            if (is_main) {
+                variable.addEventListener('click', () => {
+                    dropdownMenuButton.classList.remove('btn-secondary');
+                    dropdownMenuButton.classList.add('btn-primary');
+                    dropdownMenuButton.innerHTML = element;
+                    var_selected = element;
+                    set_start_btn();
+                });
+            } else {
+                variable.addEventListener('click', () => {
+                    var_selected_2 = element;
+                    ipcRenderer.send('get data');
+                    plus_btn.style.display = 'none';
+                });
+            }
         }
     });
-});
+}
+
+function fill_data(arr, is_main) {
+    if (is_main) {
+        if (graph_data.length === 0) {
+            arr.forEach((element) => {
+                labels.push(element.timestamp);
+                graph_data.push(element[var_selected]);
+            });
+        }
+    } else {
+        arr.forEach((element) => {
+            graph_data_2.push(element[var_selected_2]);
+        });
+        let newDataset = {
+            label: var_selected_2,
+            data: graph_data_2,
+            borderColor: var_color_code[var_selected_2],
+            pointHoverBackgroundColor: "rgba(246, 25, 25, .5)",
+            pointHoverBorderColor: "rgba(246, 25, 25, 1)",
+            pointRadius: 0,
+            fill: false
+        };
+        chart.data.datasets.push(newDataset);
+        console.log(chart.data.datasets);
+        chart.update();
+    }
+}
 
 line_btn.addEventListener('click', () => {
     graph_type_selected = 'line';
@@ -86,10 +126,8 @@ function set_start_btn() {
             ipcRenderer.send('get data');
 
             ipcRenderer.on('data', (event, data) => {
-                data.forEach((element) => {
-                    labels.push(element.timestamp);
-                    graph_data.push(element[var_selected]);
-                });
+                fill_data(data, true);
+                fill_data(data, false);
             });
 
             if (graph_type_selected === 'line') {
