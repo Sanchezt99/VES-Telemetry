@@ -9,21 +9,6 @@ header {
     z-index: 10;
 }
 
-#plus_btn {
-    width: 20px;
-    height: 20px;
-    padding: 0;
-    margin-left: 7px;
-    position: absolute;
-    filter: none;
-    outline: none;
-    display: none;
-}
-
-#plus_btn:focus {
-    outline: none;
-}
-
 #graph_selection {
     position: relative;
     top: 90px;

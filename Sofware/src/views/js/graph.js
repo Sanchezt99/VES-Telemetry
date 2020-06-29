@@ -5,23 +5,19 @@ const Chart = require('chart.js');
 
 const header = document.getElementById('header_title');
 const dropdownMenuButton = document.getElementById('dropdownMenuButton');
-const plus_btn = document.getElementById('plus_btn');
 const dropdown_menu = document.getElementById('dropdown_menu');
 const line_btn = document.getElementById('line_btn');
 const area_btn = document.getElementById('area_btn');
-const dropdown_menu_plus = document.getElementById('dropdown_menu_plus');
 const start_btn = document.getElementById('start_btn');
 const graph_selection_wrapper = document.getElementById('graph_selection');
 const chart_wrapper = document.getElementById('chart_wrapper');
 const ctx = document.getElementById('myChart').getContext('2d');
 
 var var_selected = null;
-var var_selected_2 = null;
 var graph_type_selected = null;
 var variables = [];
 var chart;
 var graph_data = [];
-var graph_data_2 = [];
 var labels = [];
 
 
@@ -42,12 +38,6 @@ ipcRenderer.send('get variables');
 
 ipcRenderer.on('variables', (event, vars) => {
     variables = vars;
-    set_dropdown(dropdown_menu, true);
-    set_dropdown(dropdown_menu_plus, false);
-});
-
-
-function set_dropdown(dropdown, is_main) {
     variables.forEach(element => {
         if (element !== 'timestamp') {
             let variable = document.createElement('a');
@@ -55,53 +45,18 @@ function set_dropdown(dropdown, is_main) {
 
             variable.classList.add('dropdown-item');
             variable.appendChild(variable_name);
-            dropdown.appendChild(variable);
+            dropdown_menu.appendChild(variable);
 
-            if (is_main) {
-                variable.addEventListener('click', () => {
-                    dropdownMenuButton.classList.remove('btn-secondary');
-                    dropdownMenuButton.classList.add('btn-primary');
-                    dropdownMenuButton.innerHTML = element;
-                    var_selected = element;
-                    set_start_btn();
-                });
-            } else {
-                variable.addEventListener('click', () => {
-                    var_selected_2 = element;
-                    ipcRenderer.send('get data');
-                    plus_btn.style.display = 'none';
-                });
-            }
+            variable.addEventListener('click', () => {
+                dropdownMenuButton.classList.remove('btn-secondary');
+                dropdownMenuButton.classList.add('btn-primary');
+                dropdownMenuButton.innerHTML = element;
+                var_selected = element;
+                set_start_btn();
+            })
         }
     });
-}
-
-function fill_data(arr, is_main) {
-    if (is_main) {
-        if (graph_data.length === 0) {
-            arr.forEach((element) => {
-                labels.push(element.timestamp);
-                graph_data.push(element[var_selected]);
-            });
-        }
-    } else {
-        arr.forEach((element) => {
-            graph_data_2.push(element[var_selected_2]);
-        });
-        let newDataset = {
-            label: var_selected_2,
-            data: graph_data_2,
-            borderColor: var_color_code[var_selected_2],
-            pointHoverBackgroundColor: "rgba(246, 25, 25, .5)",
-            pointHoverBorderColor: "rgba(246, 25, 25, 1)",
-            pointRadius: 0,
-            fill: false
-        };
-        chart.data.datasets.push(newDataset);
-        console.log(chart.data.datasets);
-        chart.update();
-    }
-}
+});
 
 line_btn.addEventListener('click', () => {
     graph_type_selected = 'line';
@@ -126,8 +81,12 @@ function set_start_btn() {
             ipcRenderer.send('get data');
 
             ipcRenderer.on('data', (event, data) => {
-                fill_data(data, true);
-                fill_data(data, false);
+                if (graph_data.length === 0) {
+                    data.forEach((element) => {
+                        labels.push(element.timestamp);
+                        graph_data.push(element[var_selected]);
+                    });
+                }
             });
 
             if (graph_type_selected === 'line') {
@@ -181,7 +140,6 @@ function set_start_btn() {
             chart_wrapper.style.display = 'block';
             header.innerHTML = var_selected;
             header.style.fontSize = '20px';
-            plus_btn.style.display = 'inline-block';
 
             ipcRenderer.on('serial data', (event, data) => {
                 addData(chart, data.timestamp, data[var_selected]);
