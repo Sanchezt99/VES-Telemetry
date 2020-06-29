@@ -5,9 +5,11 @@ const Chart = require('chart.js');
 
 const header = document.getElementById('header_title');
 const dropdownMenuButton = document.getElementById('dropdownMenuButton');
+const plus_btn = document.getElementById('plus_btn');
 const dropdown_menu = document.getElementById('dropdown_menu');
 const line_btn = document.getElementById('line_btn');
 const area_btn = document.getElementById('area_btn');
+const dropdown_menu_plus = document.getElementById('dropdown_menu_plus');
 const start_btn = document.getElementById('start_btn');
 const graph_selection_wrapper = document.getElementById('graph_selection');
 const chart_wrapper = document.getElementById('chart_wrapper');
@@ -38,12 +40,17 @@ ipcRenderer.on('variables', (event, variables) => {
     variables.forEach(element => {
         if (element !== 'timestamp') {
             let variable = document.createElement('a');
+            let variable_plus = document.createElement('a');
             let variable_name = document.createTextNode(element);
+            let variable_name_plus = document.createTextNode(element);
 
             variable.classList.add('dropdown-item');
+            variable_plus.classList.add('dropdown-item');
 
             variable.appendChild(variable_name);
+            variable_plus.appendChild(variable_name_plus);
             dropdown_menu.appendChild(variable);
+            dropdown_menu_plus.appendChild(variable_plus);
 
             variable.addEventListener('click', () => {
                 dropdownMenuButton.classList.remove('btn-secondary');
@@ -136,6 +143,7 @@ function set_start_btn() {
             chart_wrapper.style.display = 'block';
             header.innerHTML = var_selected;
             header.style.fontSize = '20px';
+            plus_btn.style.display = 'inline-block';
 
             ipcRenderer.on('serial data', (event, data) => {
                 addData(chart, data.timestamp, data[var_selected]);
