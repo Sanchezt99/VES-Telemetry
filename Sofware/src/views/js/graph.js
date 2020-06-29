@@ -13,13 +13,24 @@ const graph_selection_wrapper = document.getElementById('graph_selection');
 const chart_wrapper = document.getElementById('chart_wrapper');
 const ctx = document.getElementById('myChart').getContext('2d');
 
-var chart;
-
 var var_selected = null;
 var graph_type_selected = null;
-
+var chart;
 var graph_data = [];
 var labels = [];
+
+var speed_gradient = ctx.createLinearGradient(10,10,10,350);
+speed_gradient.addColorStop(0,'rgba(247, 255, 0, 0.5)');
+speed_gradient.addColorStop(1,'rgba(247, 255, 0, 0.0)');
+
+var soc_gradient = ctx.createLinearGradient(10,10,10,350);
+soc_gradient.addColorStop(0,'rgba(0, 255, 162, 0.5)');
+soc_gradient.addColorStop(1,'rgba(0, 255, 162, 0.0)');
+
+const var_color_code = {
+    'speed': ['rgba(232, 239, 20, 1)', speed_gradient],
+    'soc': ["rgba(0, 255, 140, 1)", soc_gradient] //BorderColor, background
+}
 
 ipcRenderer.send('get variables');
 
@@ -65,84 +76,77 @@ function set_start_btn() {
         start_btn.classList.add('btn-primary');
 
         start_btn.addEventListener('click', () => {
-            graph_selection_wrapper.style.display = 'none';
-            chart_wrapper.style.display = 'block';
-            header.innerHTML = var_selected;
-            header.style.fontSize = '20px';
-
             ipcRenderer.send('get data');
 
             ipcRenderer.on('data', (event, data) => {
                 data.forEach((element) => {
                     labels.push(element.timestamp);
-                    if (var_selected === 'speed') graph_data.push(element.speed);
-                    if (var_selected === 'minVolt') graph_data.push(element.minVolt);
-                    if (var_selected === 'maxVolt') graph_data.push(element.maxVolt);
-                    if (var_selected === 'current') graph_data.push(element.current);
-                    if (var_selected === 'instantVolt') graph_data.push(element.instantVolt);
-                    if (var_selected === 'soc') graph_data.push(element.soc);
+                    graph_data.push(element[var_selected]);
                 });
-
-                if (graph_type_selected === 'line') {
-                    chart = new Chart(ctx, {
-                        type: graph_type_selected,
-
-                        // The data for our dataset
-                        data: {
-                            labels: labels,
-                            datasets: [{
-                                label: var_selected,
-                                data: graph_data,
-                                borderColor: "#80b6f4",
-                                pointHoverBackgroundColor: "rgba(246, 25, 25, .5)",
-                                pointHoverBorderColor: "rgba(246, 25, 25, 1)",
-                                pointRadius: .3,
-                                fill: false
-                            }]
-                        },
-                        // Configuration options go here
-                        options: {
-
-                        }
-                    });
-                } else if (graph_type_selected === 'area') {
-                    chart = new Chart(ctx, {
-                        type: 'line',
-
-                        // The data for our dataset
-                        data: {
-                            labels: labels,
-                            datasets: [{
-                                label: var_selected,
-                                data: graph_data,
-                                pointRadius: .3,
-                                fill: true,
-                                backgroundColor: "rgba(244, 144, 128, 0.8)"
-                            }]
-                        },
-                        // Configuration options go here
-                        options: {
-                            fill: true
-                        }
-                    });
-                }
             });
+
+            if (graph_type_selected === 'line') {
+                chart = new Chart(ctx, {
+                    type: graph_type_selected,
+
+                    // The data for our dataset
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: var_selected,
+                            data: graph_data,
+                            borderColor: var_color_code[var_selected][0],
+                            pointHoverBackgroundColor: "rgba(246, 25, 25, .5)",
+                            pointHoverBorderColor: "rgba(246, 25, 25, 1)",
+                            pointRadius: 0,
+                            fill: false
+                        }]
+                    },
+                    // Configuration options go here
+                    options: {
+
+                    }
+                });
+            } else if (graph_type_selected === 'area') {
+                chart = new Chart(ctx, {
+                    type: 'line',
+
+                    // The data for our dataset
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: var_selected,
+                            data: graph_data,
+                            borderColor: var_color_code[var_selected][0],
+                            pointHoverBackgroundColor: "rgba(246, 25, 25, .5)",
+                            pointHoverBorderColor: "rgba(246, 25, 25, 1)",
+                            pointRadius: 0,
+                            fill: true,
+                            backgroundColor: var_color_code[var_selected][1]
+                        }]
+                    },
+                    // Configuration options go here
+                    options: {
+                        fill: true
+                    }
+                });
+            }
+
+            graph_selection_wrapper.style.display = 'none';
+            chart_wrapper.style.display = 'block';
+            header.innerHTML = var_selected;
+            header.style.fontSize = '20px';
 
             ipcRenderer.on('serial data', (event, data) => {
-                if (var_selected === 'speed') addData(chart, data.timestamp, data.speed);
-                if (var_selected === 'minVolt') addData(chart, data.timestamp, data.minVolt);
-                if (var_selected === 'maxVolt') addData(chart, data.timestamp, data.maxVolt);
-                if (var_selected === 'current') addData(chart, data.timestamp, data.current);
-                if (var_selected === 'instantVolt') addData(chart, data.timestamp, data.instantVolt);
-                if (var_selected === 'soc') addData(chart, data.timestamp, data.soc);
+                addData(chart, data.timestamp, data[var_selected]);
             });
+
+            function addData(chart, label, data) {
+                chart.data.labels.push(label);
+                chart.data.datasets[0].data.push(data);
+                chart.update();
+            }
 
         });
     }
-}
-
-function addData(chart, label, data) {
-    chart.data.labels.push(label);
-    chart.data.datasets[0].data.push(data);
-    chart.update();
 }

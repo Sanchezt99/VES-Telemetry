@@ -224,6 +224,7 @@ ipcMain.on('battery-click', (event) => {
 });
 
 ipcMain.on('graph-click', (event) => {
+
     let graphWin = new BrowserWindow({
         width: 620,
         height: 360,
@@ -237,9 +238,9 @@ ipcMain.on('graph-click', (event) => {
 
     graphWin.loadFile(path.join(__dirname, 'views/graph.html'));
 
+    serial.add_graphWindow(graphWin);
+
     graphWin.on('closed', () => {
         graphWin = null;
     });
-
-    serial.add_graphWindow(graphWin);
 });

@@ -46,8 +46,10 @@ function connect_xbee() {
                     if (batteryWindow !== null) batteryWindow.webContents.send('serial_data', data);
 
                     graphWindows.forEach(window => {
-                        if (window !== null) {
+                        try {
                             window.webContents.send('serial data', data);
+                        } catch (error) {
+                            //console.log(error);
                         }
                     });
                 });
