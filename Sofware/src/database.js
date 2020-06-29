@@ -1,6 +1,8 @@
 const r = require('rethinkdb');
 const {ipcMain} = require('electron');
 
+let databaseWindow = null;
+let mainWindow = null;
 let connection = null;
 let table_selected = null;
 let recording = false;
@@ -9,7 +11,7 @@ r.connect({host: 'localhost', port: 28015, db: 'KRATOS-VES'}, (err, conn) => {
     if (err) throw err;
     connection = conn;
     module.exports.database_connection = connection;
-    console.log('Database connected.');
+    console.info('Database connected.');
 });
 
 ipcMain.on('get data', (event) => {
@@ -21,27 +23,30 @@ ipcMain.on('get data', (event) => {
 });
 
 ipcMain.on('create table', (event, name) => {
-    r.db('KRATOS-VES').tableCreate(name).run(connection, (err, res) => {
+    r.db('KRATOS-VES').tableCreate(name).run(connection, (err, result) => {
         if (err) {
             throw err;
         }
-        console.log(res);
+        let res = JSON.stringify(result, null, 2);
+        if (databaseWindow !== null) databaseWindow.webContents.send('row affected', res);
         event.reply('table created', name);
     });
 });
 
 ipcMain.on('table selected', (event, name) => {
     table_selected = name;
+    if (mainWindow !== null) mainWindow.webContents.send('database_connected', true);
     event.reply('table selected', name);
 });
 
 ipcMain.on('table deleted', (event, name) => {
-    r.db('KRATOS-VES').tableDrop(name).run(connection, (err, res) => {
+    r.db('KRATOS-VES').tableDrop(name).run(connection, (err, result) => {
         if (err) {
             throw err;
         }
         event.reply('table deleted', name);
-        console.log(res);
+        let res = JSON.stringify(result, null, 2);
+        if (databaseWindow !== null) databaseWindow.webContents.send('row affected', res);
     });
 });
 
@@ -52,7 +57,9 @@ ipcMain.on('record', (event, state) => {
 function insert(data) {
     r.table(table_selected).insert(data).run(connection, (err, result) => {
         if (err) throw err;
-        console.log(JSON.stringify(result, null, 2));
+        let res = JSON.stringify(result, null, 2);
+        if (databaseWindow !== null) databaseWindow.webContents.send('row affected', res);
+        if (mainWindow !== null) mainWindow.webContents.send('database insert');
     });
 }
 
@@ -60,5 +67,17 @@ function get_recording_state() {
     return recording;
 }
 
-module.exports.insert = insert;
-module.exports.get_recording_state = get_recording_state;
+function set_databaseWindow(window) {
+    databaseWindow = window;
+}
+
+function set_mainWindow(window) {
+    mainWindow = window;
+} 
+
+module.exports = {
+    insert,
+    get_recording_state,
+    set_databaseWindow,
+    set_mainWindow
+}
