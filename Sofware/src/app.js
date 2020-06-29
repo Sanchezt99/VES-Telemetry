@@ -42,7 +42,10 @@ function create_main_window() {
         height: 700,
         webPreferences: {
             nodeIntegration: true
-        }
+        },
+        minWidth: 800,
+        minHeight: 650,
+        title: "VES Telemetry"
     });
 
     const template = [
@@ -173,7 +176,8 @@ function create_database_window() {
         title: 'Database',
         webPreferences: {
             nodeIntegration: true
-        }
+        },
+        resizable: false
     });
 
     database.set_databaseWindow(databaseWindow);
@@ -219,7 +223,24 @@ ipcMain.on('battery-click', (event) => {
     //batteryWindow.webContents.openDevTools();
 });
 
-ipcMain.on('local file', (event, path) => {
-    event.reply('local file selected', path);
-    local_storage_file_path = path;
+ipcMain.on('graph-click', (event) => {
+
+    let graphWin = new BrowserWindow({
+        width: 620,
+        height: 360,
+        title: 'Graphic',
+        minWidth: 600,
+        minHeight: 330,
+        webPreferences: {
+          nodeIntegration: true
+      }
+    });
+
+    graphWin.loadFile(path.join(__dirname, 'views/graph.html'));
+
+    serial.add_graphWindow(graphWin);
+
+    graphWin.on('closed', () => {
+        graphWin = null;
+    });
 });

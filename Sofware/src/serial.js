@@ -10,6 +10,7 @@ var xbeeAPI = new xbee_api.XBeeAPI({
 
 let mainWindow = null;
 let batteryWindow = null;
+let graphWindows = [];
 let connect = setInterval(connect_xbee, 1000);
 
 function connect_xbee() {
@@ -43,6 +44,14 @@ function connect_xbee() {
                     
                     if (mainWindow !== null) mainWindow.webContents.send('serial_data', data);
                     if (batteryWindow !== null) batteryWindow.webContents.send('serial_data', data);
+
+                    graphWindows.forEach(window => {
+                        try {
+                            window.webContents.send('serial data', data);
+                        } catch (error) {
+                            //console.log(error);
+                        }
+                    });
                 });
 
                 port.on('close', function() {
@@ -64,7 +73,12 @@ function set_batteryWindow(window) {
     batteryWindow = window;
 }
 
+function add_graphWindow(window) {
+    graphWindows.push(window);
+}
+
 module.exports = {
     set_mainWindow,
     set_batteryWindow,
+    add_graphWindow
 }

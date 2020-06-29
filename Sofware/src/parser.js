@@ -1,3 +1,5 @@
+const {ipcMain} = require('electron');
+
 const data = {};
 
 function parse_data(data_frame) {
@@ -37,6 +39,19 @@ function parse_twoBytes(byte0, byte1) {
     value = (byte0 << 8) | value;
     return value;
 }
+
+ipcMain.on('get variables', (event) => {
+    let variables = [
+        'timestamp',
+        'speed',
+        'minVolt',
+        'maxVolt',
+        'current',
+        'instantVolt',
+        'soc'
+    ];
+    event.reply('variables', variables);
+});
 
 module.exports = {
     parse_data
