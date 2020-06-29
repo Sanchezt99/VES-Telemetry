@@ -1,6 +1,5 @@
 const {app, BrowserWindow, Menu, MenuItem, ipcMain} = require('electron');
 const serial = require('./serial.js');
-const database = require('./database.js');
 const path = require('path');
 
 if (process.env.NODE_ENV !== 'production') require('electron-reload')(__dirname, {
@@ -14,7 +13,6 @@ let databaseWindow = null;
 app.on('ready', () => {
     create_main_window();
     serial.set_mainWindow(mainWindow);
-    database.set_mainWindow(mainWindow);
 });
 
 app.on('activate', () => {
@@ -176,7 +174,6 @@ function create_database_window() {
         }
     });
 
-    database.set_databaseWindow(databaseWindow);
     databaseWindow.loadFile(path.join(__dirname, 'views/database.html'));
 
     databaseWindow.on('closed', () => {
@@ -223,3 +220,18 @@ ipcMain.on('local file', (event, path) => {
     event.reply('local file selected', path);
     local_storage_file_path = path;
 });
+
+//================================== Functions ==================================//
+
+function get_mainWindow() {
+    return mainWindow;
+}
+
+function get_batteryWindow() {
+    return batteryWindow;
+}
+
+module.exports = {
+    get_mainWindow,
+    get_batteryWindow
+}

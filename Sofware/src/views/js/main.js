@@ -17,25 +17,19 @@ function initMap() {
 }
 
 function set_serial_indicator(state) {
-    serial_indicator.style.backgroundColor = (state) ? 'rgba(48, 190, 55, 0.7)' : 'rgba(165, 165, 165, .7)';
-}
-
-function set_database_indicator(state) {
-    database_indicator.style.backgroundColor = (state) ? 'rgba(53, 152, 233, 0.9)' : 'rgba(165, 165, 165, .7)';
-}
-
-function blink_indicator(indicator) {
-    if (indicator) {
-        serial_indicator.style.backgroundColor = 'rgba(78, 255, 87, 0.7)';
-        setTimeout(() => {
-            serial_indicator.style.backgroundColor = 'rgba(48, 190, 55, 0.7)';
-        }, 200);
+    if (state) {
+        serial_indicator.style.backgroundColor = 'rgba(48, 190, 55, 0.7)';
     } else {
-        database_indicator.style.backgroundColor = 'rgba(14, 238, 240, 0.9)';
-        setTimeout(() => {
-            database_indicator.style.backgroundColor = 'rgba(53, 152, 233, 0.9)';
-        }, 200);
+        serial_indicator.style.backgroundColor = 'rgba(165, 165, 165, .7)';
     }
+}
+
+function database_active_indicator() {
+    database_indicator.style.backgroundColor = 'rgba(86, 178, 253, .7)';
+}
+
+function database_desactive_indicator() {
+    database_indicator.style.backgroundColor = 'rgba(165, 165, 165, .7)';
 }
 
 database_button.addEventListener('click', () => {
@@ -51,16 +45,11 @@ general_button.addEventListener('click', () => {
 }); 
 
 ipcRenderer.on('serial_connected', (event, state) => {
-    set_serial_indicator(state);
-});
-
-ipcRenderer.on('database_connected', (event, state) => {
-    set_database_indicator(state);
-});
-
-ipcRenderer.on('database insert', (event) => {
-    blink_indicator(false);
-    console.log('row');
+    if (state) {
+        set_serial_indicator(state);
+    } else {
+        set_serial_indicator(state);
+    }
 });
 
 ipcRenderer.on('serial_data', (event, data) => {
@@ -84,6 +73,4 @@ ipcRenderer.on('serial_data', (event, data) => {
             map.setZoom(17);
         }
     }
-    set_serial_indicator(true); //provicional mientras se soluciona el evento close de serialPort
-    blink_indicator(true); //true for serial data in, false for database in
 });

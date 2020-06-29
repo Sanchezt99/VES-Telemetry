@@ -37,6 +37,7 @@ start_btn.addEventListener('click', () => {
             recording = true;
             ipcRenderer.send('record', recording);
             set_start_btn();
+            console.log('active');
         } else {
             recording = false;
             ipcRenderer.send('record', recording);
@@ -78,10 +79,6 @@ ipcRenderer.on('table selected', (event, name) => {
     table_selected_indicator.style.backgroundColor = 'rgb(86, 209, 82)';
     start_btn.classList.remove('disabled');
     set_start_btn();
-});
-
-ipcRenderer.on('row affected', (event, res) => {
-    console.log(res);
 });
 
 function set_start_btn() {
